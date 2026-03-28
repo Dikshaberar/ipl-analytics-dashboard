@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, jsonify
 import pandas as pd
 import plotly.express as px
@@ -6,8 +7,9 @@ import json
 
 app = Flask(__name__)
 
-matches = pd.read_csv('../data/matches.csv')
-deliveries = pd.read_csv('../data/deliveries.csv')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+matches = pd.read_csv(os.path.join(BASE_DIR, 'data', 'matches.csv'))
+deliveries = pd.read_csv(os.path.join(BASE_DIR, 'data', 'deliveries.csv'))
 matches = matches.dropna(subset=['winner'])
 
 def make_chart(fig):
@@ -77,8 +79,7 @@ def season_runs():
     data = merged.groupby('season')['total_runs'].sum().reset_index()
     data.columns = ['season', 'total_runs']
     fig = px.line(data, x='season', y='total_runs', markers=True,
-                  title='📈 Season-wise Total Runs',
-                  line_shape='spline',
+                  title='📈 Season-wise Total Runs', line_shape='spline',
                   labels={'total_runs': 'Total Runs', 'season': 'Season'})
     fig.update_traces(line_color='#f97316',
                       marker=dict(size=10, color='white',
