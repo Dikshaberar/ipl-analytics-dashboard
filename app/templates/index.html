@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏏 IPL Analytics Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 24px 40px;
+            border-bottom: 2px solid #f97316;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f97316;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 24px;
+            padding: 20px 40px;
+            background: #111;
+            border-bottom: 1px solid #222;
+        }
+
+        .stat-card {
+            background: #1a1a2e;
+            border: 1px solid #f97316;
+            border-radius: 10px;
+            padding: 14px 24px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-card h3 {
+            font-size: 22px;
+            color: #f97316;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 32px 40px;
+        }
+
+        .chart-card {
+            background: #111827;
+            border-radius: 16px;
+            border: 1px solid #1e293b;
+            padding: 8px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-4px);
+            border-color: #f97316;
+        }
+
+        .chart-card.full {
+            grid-column: span 2;
+        }
+
+        .chart-div {
+            width: 100%;
+            height: 400px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #475569;
+            border-top: 1px solid #1e293b;
+            font-size: 13px;
+        }
+
+        footer span { color: #f97316; }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .chart-card.full { grid-column: span 1; }
+            .stats-bar { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>🏏</div>
+    <div>
+        <h1>IPL Analytics Dashboard</h1>
+        <p>2008 – 2024 · 1,090 Matches · 2,60,920 Deliveries Analyzed</p>
+    </div>
+</header>
+
+<div class="stats-bar">
+    <div class="stat-card">
+        <h3>1,090</h3>
+        <p>Total Matches</p>
+    </div>
+    <div class="stat-card">
+        <h3>16</h3>
+        <p>Seasons</p>
+    </div>
+    <div class="stat-card">
+        <h3>19</h3>
+        <p>Teams</p>
+    </div>
+    <div class="stat-card">
+        <h3>58</h3>
+        <p>Venues</p>
+    </div>
+    <div class="stat-card">
+        <h3>2,60,920</h3>
+        <p>Balls Bowled</p>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="chart-card">
+        <div id="team_wins" class="chart-div"></div>
+    </div>
+    <div class="chart-card">
+        <div id="toss_impact" class="chart-div"></div>
+    </div>
+    <div class="chart-card full">
+        <div id="top_batsmen" class="chart-div"></div>
+    </div>
+    <div class="chart-card full">
+        <div id="top_bowlers" class="chart-div"></div>
+    </div>
+    <div class="chart-card full">
+        <div id="season_runs" class="chart-div"></div>
+    </div>
+    <div class="chart-card full">
+        <div id="potm" class="chart-div"></div>
+    </div>
+</div>
+
+<footer>
+    Built with <span>Flask + Plotly + Pandas</span> · IPL Data Analytics Project
+</footer>
+
+<script>
+    async function loadChart(endpoint, divId) {
+        const res = await fetch(`/api/${endpoint}`);
+        const fig = await res.json();
+        const parsed = JSON.parse(fig);
+        Plotly.newPlot(divId, parsed.data, parsed.layout, {responsive: true});
+    }
+
+    loadChart('team_wins', 'team_wins');
+    loadChart('toss_impact', 'toss_impact');
+    loadChart('top_batsmen', 'top_batsmen');
+    loadChart('top_bowlers', 'top_bowlers');
+    loadChart('season_runs', 'season_runs');
+    loadChart('potm', 'potm');
+</script>
+
+</body>
+</html>
